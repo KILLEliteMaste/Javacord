@@ -38,6 +38,7 @@ import org.javacord.api.entity.user.UserStatus;
 import org.javacord.api.entity.webhook.IncomingWebhook;
 import org.javacord.api.entity.webhook.Webhook;
 import org.javacord.api.entity.webhook.WebhookType;
+import org.javacord.api.event.server.ServerMembersLoadedEvent;
 import org.javacord.core.DiscordApiImpl;
 import org.javacord.core.audio.AudioConnectionImpl;
 import org.javacord.core.entity.IconImpl;
@@ -55,6 +56,7 @@ import org.javacord.core.entity.user.MemberImpl;
 import org.javacord.core.entity.user.UserImpl;
 import org.javacord.core.entity.webhook.IncomingWebhookImpl;
 import org.javacord.core.entity.webhook.WebhookImpl;
+import org.javacord.core.event.server.ServerMembersLoadedEventImpl;
 import org.javacord.core.listener.server.InternalServerAttachableListenerManager;
 import org.javacord.core.util.Cleanupable;
 import org.javacord.core.util.event.DispatchQueueSelector;
@@ -740,7 +742,7 @@ public class ServerImpl implements Server, Cleanupable, InternalServerAttachable
     public void decrementMemberCount() {
         memberCount.decrementAndGet();
     }
-
+    private boolean allMembersLoaded = false;
     /**
      * Adds a member to the server.
      *
@@ -750,12 +752,23 @@ public class ServerImpl implements Server, Cleanupable, InternalServerAttachable
     public MemberImpl addMember(JsonNode memberJson) {
         MemberImpl member = new MemberImpl(api, this, memberJson, null);
         api.addMemberToCacheOrReplaceExisting(member);
-
         synchronized (readyConsumers) {
-            if (!ready && getRealMembers().size() == getMemberCount()) {
-                ready = true;
-                readyConsumers.forEach(consumer -> consumer.accept(this));
-                readyConsumers.clear();
+            if (getRealMembers().size() == getMemberCount()){
+
+                if (!allMembersLoaded){
+                    allMembersLoaded= true;
+                    ServerMembersLoadedEvent event = new ServerMembersLoadedEventImpl(this);
+                    //System.out.println(name+"      " + getRealMembers().size() +" |||"+getMemberCount()+"    "+member.getDisplayName());
+                    api.getEventDispatcher().dispatchServerMembersLoadedEvent(this, event);
+                }
+
+
+
+                if (!ready){
+                    ready = true;
+                    readyConsumers.forEach(consumer -> consumer.accept(this));
+                    readyConsumers.clear();
+                }
             }
         }
         return member;

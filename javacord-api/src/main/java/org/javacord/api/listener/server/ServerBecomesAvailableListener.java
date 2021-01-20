@@ -13,7 +13,7 @@ import org.javacord.api.listener.GloballyAttachableListener;
 public interface ServerBecomesAvailableListener extends GloballyAttachableListener {
 
     /**
-     * This method is called every time a server became unavailable.
+     * This method is called every time a server became available.
      *
      * @param event The event.
      */
