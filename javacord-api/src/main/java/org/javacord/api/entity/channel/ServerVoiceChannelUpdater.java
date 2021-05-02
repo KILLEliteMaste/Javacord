@@ -113,6 +113,12 @@ public class ServerVoiceChannelUpdater extends ServerChannelUpdater {
     }
 
     @Override
+    public ServerVoiceChannelUpdater copyPermissions(ServerChannel serverChannel) {
+        delegate.copyPermissions(serverChannel);
+        return this;
+    }
+
+    @Override
     public CompletableFuture<Void> update() {
         return delegate.update();
     }

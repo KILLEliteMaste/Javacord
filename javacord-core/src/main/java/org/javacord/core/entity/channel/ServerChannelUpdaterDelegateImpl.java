@@ -89,6 +89,28 @@ public class ServerChannelUpdaterDelegateImpl implements ServerChannelUpdaterDel
     }
 
     @Override
+    public void copyPermissions(ServerChannel serverChannel) {
+        copyOverwrittenRolePermissions(serverChannel.getOverwrittenRolePermissions());
+        copyOverwrittenUserPermissions(serverChannel.getOverwrittenUserPermissions());
+    }
+
+    private void copyOverwrittenUserPermissions(Map<Long, Permissions> userPermissions) {
+        overwrittenUserPermissions = null;
+        populatePermissionOverwrites();
+        for (Map.Entry<Long, Permissions> longPermissionsEntry : userPermissions.entrySet()) {
+            overwrittenUserPermissions.put(longPermissionsEntry.getKey(), longPermissionsEntry.getValue());
+        }
+    }
+
+    private void copyOverwrittenRolePermissions(Map<Long, Permissions> rolePermissions) {
+        overwrittenRolePermissions = null;
+        populatePermissionOverwrites();
+        for (Map.Entry<Long, Permissions> longPermissionsEntry : rolePermissions.entrySet()) {
+            overwrittenRolePermissions.put(longPermissionsEntry.getKey(), longPermissionsEntry.getValue());
+        }
+    }
+
+    @Override
     public <T extends Permissionable & DiscordEntity> void removePermissionOverwrite(T permissionable) {
         populatePermissionOverwrites();
         if (permissionable instanceof Role) {

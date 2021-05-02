@@ -96,6 +96,17 @@ public class ServerChannelUpdater {
     }
 
     /**
+     * Copy all permissions in common from a ServerChannel to this ServerChannel.
+     *
+     * @param serverChannel The ServerChannel to copy the permissions from.
+     * @return The current instance in order to chain call methods.
+     */
+    public ServerChannelUpdater copyPermissions(ServerChannel serverChannel) {
+        delegate.copyPermissions(serverChannel);
+        return this;
+    }
+
+    /**
      * Performs the queued updates.
      *
      * @return A future to check if the update was successful.

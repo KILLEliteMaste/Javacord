@@ -55,6 +55,13 @@ public interface ServerChannelUpdaterDelegate {
     <T extends Permissionable & DiscordEntity> void removePermissionOverwrite(T permissionable);
 
     /**
+     * Copy all permissions in common from a ServerChannel to this ServerChannel.
+     *
+     * @param serverChannel The ServerChannel to copy the permissions from.
+     */
+    void copyPermissions(ServerChannel serverChannel);
+
+    /**
      * Performs the queued updates.
      *
      * @return A future to check if the update was successful.
