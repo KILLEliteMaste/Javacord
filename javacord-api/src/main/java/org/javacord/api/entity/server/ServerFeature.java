@@ -64,5 +64,19 @@ public enum ServerFeature {
     /**
      * Server can be previewed before joining via Membership Screening or the directory.
      */
-    PREVIEW_ENABLED
+    PREVIEW_ENABLED,
+
+    /**
+     * Server has enabled ticketed events.
+     */
+    TICKETED_EVENTS_ENABLED,
+
+    /**
+     * Server has enabled monetization
+     */
+    MONETIZATION_ENABLED,
+    /**
+     * Server has increased custom sticker slots
+     */
+    MORE_STICKERS
 }
