@@ -78,6 +78,25 @@ public class DiscordRegexPattern {
                             + ">                   # '>' \n");
 
     /**
+     * A pattern which checks for unix timestamps (e.g. {@code <t:13245678:d>}).
+     * For a list of compatible styles see https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
+     */
+    public static final Pattern UNIX_TIMESTAMP =
+            Pattern.compile("(?x)                  # enable comment mode \n"
+                    + "(?<!                # negative lookbehind \n"
+                    + "                    # (do not have uneven amount of backslashes before) \n"
+                    + "    (?<!\\\\)       # negative lookbehind (do not have one backslash before) \n"
+                    + "    (?:\\\\{2}+)    # exactly two backslashes \n"
+                    + "    {0,1000000000}+ # 0 to 1_000_000_000 times \n"
+                    + "                    # (basically *, but a lookbehind has to have a maximum length) \n"
+                    + "    \\\\            # the one escaping backslash \n"
+                    + ")                   # \n"
+                    + "<t:               # '<:' or '<a:' \n"
+                    + "(?<timestamp>[0-9]++)      # the custom emoji id as named group \n"
+                    + "(?<style>:\\w)?      # the custom emoji name as named group \n"
+                    + ">                   # '>' \n");
+
+    /**
      * A pattern which checks for message links (e.g. {@code https://discord.com/channels/@me/1234/5678}
      */
     public static final Pattern MESSAGE_LINK =
